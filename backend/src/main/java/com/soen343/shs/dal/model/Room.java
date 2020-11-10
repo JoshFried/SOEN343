@@ -16,7 +16,7 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, name = "ROOM_NAME")
     private String name;
 
     private double temperature;
@@ -25,7 +25,6 @@ public class Room {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
-
     private Set<Door> doors;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -33,7 +32,10 @@ public class Room {
 
     @ElementCollection
     private Set<Long> userIds;
+    
+    private Long houseId;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<HouseWindow> houseWindows;
+
 }

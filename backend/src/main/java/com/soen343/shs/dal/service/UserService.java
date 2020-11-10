@@ -32,7 +32,12 @@ public class UserService {
      * @return dto representing the change of state to our user
      */
     public RealUserDTO updateUser(final RealUserDTO dto) {
-        return mvcConversionService.convert(userRepository.save(mapper.mapRealUserDTOToRealUser(dto, fetchById(dto.getId()))), RealUserDTO.class);
+        return mvcConversionService
+                .convert(userRepository
+                                // Convert after mapping is taken care of
+                                .save(mapper
+                                        .mapRealUserDTOToRealUser(dto, fetchById(dto.getId()))),
+                        RealUserDTO.class);
     }
 
     /**
@@ -43,6 +48,17 @@ public class UserService {
      */
     public <DTO> DTO getById(final long id, final Class<DTO> dto) {
         return mvcConversionService.convert(fetchById(id), dto);
+    }
+
+    /**
+     * @param username of the user we wish to make leave the house
+     * @return updated user who is now not located inside of the house
+     */
+    public RealUserDTO leaveHouse(final String username) {
+        final RealUserDTO dto = getUserByUsername(username, RealUserDTO.class);
+        dto.setLocation(null);
+        dto.setOutside(true);
+        return updateUser(dto);
     }
 
     /**

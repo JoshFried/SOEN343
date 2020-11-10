@@ -10,5 +10,6 @@ import lombok.*;
 public class WindowDTO {
     private long id;
     private boolean blocked;
+    private long roomId;
     private boolean open;
 }

@@ -23,6 +23,7 @@ public class ConvertCollectionOfRooms {
                         .doors(ConvertCollectionOfDoors.convertDoorDTOs(room.getDoors()))
                         .houseWindows(ConvertCollectionOfWindows.convertWindowDTOs(room.getWindows()))
                         .lights(ConvertCollectionOfLights.convertLightDTOs(room.getLights()))
+                        .houseId(room.getHouseId())
                         .build())
                 .collect(Collectors.toSet());
     }

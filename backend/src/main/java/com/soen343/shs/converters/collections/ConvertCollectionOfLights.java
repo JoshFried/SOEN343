@@ -17,7 +17,11 @@ public class ConvertCollectionOfLights {
         return lights.stream()
                 .map(light -> Light.builder()
                         .id(light.getId())
+                        .roomId(light.getRoomId())
                         .isLightOn(light.isLightOn())
+                        .awayMode(light.isAwayMode())
+                        .start(light.getStart())
+                        .end(light.getEnd())
                         .build())
                 .collect(Collectors.toSet());
     }
@@ -27,6 +31,10 @@ public class ConvertCollectionOfLights {
                 .map(light -> LightDTO.builder()
                         .id(light.getId())
                         .isLightOn(light.getIsLightOn())
+                        .roomId(light.getRoomId())
+                        .awayMode(light.getAwayMode())
+                        .end(light.getEnd())
+                        .start(light.getStart())
                         .build())
                 .collect(Collectors.toSet());
     }

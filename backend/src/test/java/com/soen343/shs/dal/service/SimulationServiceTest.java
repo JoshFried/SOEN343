@@ -3,6 +3,7 @@ package com.soen343.shs.dal.service;
 import com.soen343.shs.dal.model.House;
 import com.soen343.shs.dal.model.HouseWindow;
 import com.soen343.shs.dal.model.Room;
+import com.soen343.shs.dal.service.events.UserEntersRoomPublisher;
 import com.soen343.shs.dto.HouseDTO;
 import com.soen343.shs.dto.HouseMemberDTO;
 import com.soen343.shs.dto.RoomDTO;
@@ -20,26 +21,31 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.soen343.shs.dal.service.helpers.HouseHelper.HOUSE_ID;
 import static com.soen343.shs.dal.service.helpers.HouseMemberHelper.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SimulationServiceTest {
 
     @Mock
+    private ConversionService mvcConversionService;
+
+    @Mock
     private HouseService houseService;
 
     @Mock
-    private HouseMemberService houseMemberService;
+    private RoomService roomService;
 
     @Mock
     private UserService userService;
 
     @Mock
-    private ConversionService mvcConversionService;
+    private HouseMemberService houseMemberService;
 
     @Mock
-    private RoomService roomService;
+    private UserEntersRoomPublisher publisher;
 
     @InjectMocks
     private SimulationService classUnderTest;
@@ -53,7 +59,9 @@ class SimulationServiceTest {
         when(roomService.getRoom(MOCK_ROOM_ID)).thenReturn(roomDTO);
         when(dto.getLocation()).thenReturn(roomDTO);
 
-        when(houseMemberService.updateHouseMember(dto)).thenReturn(HouseMemberDTO.builder().location(roomDTO).build());
+        when(houseMemberService.updateHouseMember(dto)).thenReturn(HouseMemberDTO.builder().houseIds(Collections.singleton(HOUSE_ID)).location(roomDTO).build());
+        when(mvcConversionService.convert(any(), any())).thenReturn(dto);
+        when(dto.getHouseIds()).thenReturn(Collections.singleton(HOUSE_ID));
 
         final UserDTO houseMemberDTO = classUnderTest.moveUserToRoom(MOCK_HOUSE_MEMBER_NAME, MOCK_ROOM_ID, HouseMemberDTO.class);
 

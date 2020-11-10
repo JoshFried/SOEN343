@@ -5,7 +5,10 @@ import com.soen343.shs.dal.model.Room;
 import com.soen343.shs.dto.RealUserDTO;
 import com.soen343.shs.dto.RoomDTO;
 
+import java.util.Collections;
+
 import static com.soen343.shs.dal.model.UserRole.PARENT;
+import static com.soen343.shs.dal.service.helpers.HouseHelper.HOUSE_ID;
 
 public class UserTestHelper {
     public static final Long USER_ID = 1L;
@@ -22,6 +25,7 @@ public class UserTestHelper {
                 .firstName(FIRST_NAME)
                 .id(USER_ID)
                 .isOutside(false)
+                .houseIds(Collections.singleton(HOUSE_ID))
                 .lastName(LAST_NAME)
                 .location(Room.builder().id(1L).build())
                 .password(PASSWORD)
@@ -37,6 +41,7 @@ public class UserTestHelper {
                 .lastName(LAST_NAME)
                 .id(USER_ID)
                 .role(PARENT)
+                .houseIds(Collections.singleton(HOUSE_ID))
                 .location(RoomDTO.builder().build())
                 .isOutside(false)
                 .build();

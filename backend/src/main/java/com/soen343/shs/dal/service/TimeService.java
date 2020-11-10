@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 public class TimeService {
@@ -15,7 +16,6 @@ public class TimeService {
     }
 
     /**
-     *
      * @return time in millisecond corresponding to the time elapse since 1 January 1970, 00:00 UTC
      */
     public long getCurrentDateInMilliseconds() {
@@ -44,5 +44,9 @@ public class TimeService {
         final long minuteInMilliSeconds = localDateTime.getMinute() * 60000;
         final long secondsInMilliSeconds = localDateTime.getSecond() * 60000;
         return hoursInMilliseconds + minuteInMilliSeconds + secondsInMilliSeconds;
+    }
+
+    public LocalTime getLocalTime() {
+        return LocalDateTime.now(clock).toLocalTime();
     }
 }

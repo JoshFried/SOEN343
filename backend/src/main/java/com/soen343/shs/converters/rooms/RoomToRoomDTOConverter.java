@@ -16,6 +16,7 @@ public class RoomToRoomDTOConverter implements Converter<Room, RoomDTO> {
                 .lights(ConvertCollectionOfLights.convertLights(room.getLights()))
                 .name(room.getName())
                 .temperature(room.getTemperature())
+                .houseId(room.getHouseId())
                 .windows(ConvertCollectionOfWindows.convertWindows(room.getHouseWindows()))
                 .userIds(room.getUserIds())
                 .roomId(room.getId())

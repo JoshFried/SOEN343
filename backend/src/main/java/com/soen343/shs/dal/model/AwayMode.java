@@ -7,17 +7,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
 @Builder
-public class HouseWindow {
+@Entity
+public class AwayMode {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Long roomId;
-    private Boolean blocked;
-    private Boolean open;
+    private Boolean active;
+    private Long intruderDetectionDelay;
 }

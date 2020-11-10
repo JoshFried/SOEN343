@@ -11,6 +11,9 @@ public class LightToLightDTOConverter implements Converter<Light, LightDTO> {
         return LightDTO.builder()
                 .id(light.getId())
                 .isLightOn(light.getIsLightOn())
+                .awayMode(light.getAwayMode())
+                .end(light.getEnd())
+                .start(light.getStart())
                 .build();
     }
 }

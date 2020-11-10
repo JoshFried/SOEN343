@@ -1,5 +1,6 @@
 package com.soen343.shs.dal.service;
 
+import com.soen343.shs.dal.service.events.UserEntersRoomPublisher;
 import com.soen343.shs.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -12,12 +13,13 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SimulationService {
 
-    private final HouseService houseService;
     private final ConversionService mvcConversionService;
+    private final HouseService houseService;
     private final RoomService roomService;
     private final UserService userService;
     private final HouseMemberService houseMemberService;
-    
+    private final UserEntersRoomPublisher publisher;
+
     /**
      * @param userId  id used to fetch user from db
      * @param houseId id used to fetch house from db
@@ -50,21 +52,30 @@ public class SimulationService {
      * @param roomId   a room id to transfer to
      * @return UserDTO object reflecting the changes made to the object
      */
-
     public <DTO extends UserDTO> UserDTO moveUserToRoom(final String username,
                                                         final long roomId,
                                                         final Class<DTO> dto) {
+
         final DTO user = userService.getUserByUsername(username, dto);
-        if (user.isOutside()) {
-            user.setOutside(false);
-        }
+        updatePreviousLocation(user);
         user.setLocation(roomService.getRoom(roomId));
+
         if (user instanceof RealUserDTO) {
             userService.updateUser((RealUserDTO) user);
         } else {
             houseMemberService.updateHouseMember((HouseMemberDTO) user);
         }
-        return user;
+        roomService.addUserToRoom(roomId, user.getId());
+        publisher.publishEvent(roomId, user.getHouseIds().iterator().next());
+        return mvcConversionService.convert(user, dto);
+    }
+
+    private <DTO extends UserDTO> void updatePreviousLocation(final DTO user) {
+        if (user.isOutside()) {
+            user.setOutside(false);
+        } else {
+            roomService.removeUserFromRoom(user.getLocation().getRoomId(), user.getId());
+        }
     }
 
     /**
@@ -75,8 +86,12 @@ public class SimulationService {
         return Objects.requireNonNull(mvcConversionService.convert(houseService.fetchHouse(houseId), HouseDTO.class)).getRooms();
     }
 
-
-    public boolean addUserIdToHouse(final UserDTO dto, final long houseId) {
+    /**
+     * @param dto     user object to have the role checked
+     * @param houseId id of house to fetch from db
+     * @return boolean value letting the previous method know the operation was successful
+     */
+    private boolean addUserIdToHouse(final UserDTO dto, final long houseId) {
         final HouseDTO house = houseService.getHouse(houseId);
 
         switch (dto.getRole()) {

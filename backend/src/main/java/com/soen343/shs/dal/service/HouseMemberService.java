@@ -1,11 +1,11 @@
 package com.soen343.shs.dal.service;
 
 import com.soen343.shs.dal.model.HouseMember;
-import com.soen343.shs.dal.model.Room;
 import com.soen343.shs.dal.model.UserRole;
 import com.soen343.shs.dal.repository.UserRepository;
 import com.soen343.shs.dal.repository.mapping.HouseMemberMapper;
 import com.soen343.shs.dal.service.exceptions.state.SHSNotFoundException;
+import com.soen343.shs.dal.service.validators.helper.ErrorMessageGenerator;
 import com.soen343.shs.dto.HouseMemberDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -36,14 +36,14 @@ public class HouseMemberService {
                 .isOutside(houseMemberDTO.isOutside())
                 .houseIds(houseMemberDTO.getHouseIds())
                 .build());
-        Room room = roomService.fetchRoom(houseMemberDTO.getLocation().getRoomId());
-        roomService.addUserToRoom(room, houseMemberDTO.getId());
+
+        roomService.addUserToRoom(houseMemberDTO.getLocation().getRoomId(), houseMemberDTO.getId());
         return mvcConversionService.convert(houseMember, HouseMemberDTO.class);
     }
 
     public HouseMemberDTO updateHouseMember(final HouseMemberDTO houseMemberDTO) {
-        final HouseMember member = userRepository.save(mapper.mapUserDTOToUser(houseMemberDTO, findHouseMember(houseMemberDTO.getId())));
-        return houseMemberDTO;
+        return mvcConversionService.convert(userRepository.save(mapper.mapUserDTOToUser(houseMemberDTO, findHouseMember(houseMemberDTO.getId()))),
+                HouseMemberDTO.class);
     }
 
     /**
@@ -69,11 +69,11 @@ public class HouseMemberService {
     }
 
     /**
-     * @param houseMemberId house member id
+     * @param id house member id
      * @return a room House member
      */
-    private HouseMember findHouseMember(final long houseMemberId) {
-        return userRepository.findById(HouseMember.class, houseMemberId)
-                .orElseThrow(() -> new SHSNotFoundException(String.format("House member with id: %d was not found", houseMemberId)));
+    private HouseMember findHouseMember(final long id) {
+        return userRepository.findById(HouseMember.class, id)
+                .orElseThrow(() -> new SHSNotFoundException(ErrorMessageGenerator.getSHSNotFoundErrorMessage(id, HouseMember.class)));
     }
 }

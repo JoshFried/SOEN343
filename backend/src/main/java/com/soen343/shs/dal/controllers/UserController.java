@@ -43,4 +43,11 @@ public class UserController {
         return userService.getUserByUsername(authentication.getName(), RealUserDTO.class);
     }
 
+    @PutMapping(value = "/outside")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ResponseBody
+    public RealUserDTO moveUserOutside(@AuthenticationPrincipal final Authentication auth) {
+        return userService.leaveHouse(auth.getName());
+    }
+
 }

@@ -24,7 +24,7 @@ public class CityService {
     }
 
     /**
-     * @param houseId     a house id
+     * @param name        name of the city
      * @param temperature new outside temperature
      * @return HouseDTO object reflecting the changes made to the object
      */

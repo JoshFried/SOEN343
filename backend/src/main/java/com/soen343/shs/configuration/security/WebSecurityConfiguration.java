@@ -37,6 +37,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Timer;
 
 @Configuration
 @EnableWebSecurity
@@ -107,6 +108,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter imple
         mvcConversionService.addConverter(new HouseToHouseDTOConverter());
         mvcConversionService.addConverter(new HouseDTOToHouseConverter());
         mvcConversionService.addConverter(new CityToCityDTOConverter());
+    }
+
+    @Bean
+    public Timer getTimer() {
+        return new Timer();
     }
 
     @Bean
